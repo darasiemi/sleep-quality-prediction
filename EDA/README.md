@@ -10,5 +10,9 @@ conda activate sleep-project
 
 Installing libraries
 ```bash
-conda install numpy pandas scikit-learn seaborn jupyter
+conda install numpy pandas scikit-learn seaborn jupyter statsmodel
+```
+To install statsmodel
+```bash
+conda install -c conda-forge statsmodels
 ```
