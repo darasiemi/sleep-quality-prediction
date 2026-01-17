@@ -45,3 +45,25 @@ To run container
 docker run -it --rm -p 9696:9696 sleep-quality
 ```
 
+### Best Practices
+To install black and isort for code formating
+```bash
+uv add --dev black isort pre-commit
+```
+To run the formatting
+```bash
+uv run black .
+```
+```bash
+uv run isort .
+```
+
+To install precommit hooks
+```bash
+uv run pre-commit install
+```
+To run precommits
+```bash
+uv run pre-commit run --all-files
+```
+

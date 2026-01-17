@@ -1,8 +1,8 @@
 import pandas as pd
 
+
 def build_lagged_features(
     history_df: pd.DataFrame,
-
     lags=(1, 2, 3, 7),
     target="Sleep quality",
     base_vars=("time_in_minutes", "Activity (steps)", "sleep_timing_bin", "Day"),
@@ -28,7 +28,6 @@ def build_lagged_features(
         for lag in lags:
             df_feat[f"{col}_lag{lag}"] = df_feat[col].shift(lag)
 
-
     # Drop rows with NaN in lagged features
     # Only keep rows where ALL lagged features are available
     lag_feature_cols = [f"{target}_lag{l}" for l in lags]
@@ -37,7 +36,7 @@ def build_lagged_features(
 
     df_feat = df_feat.dropna(subset=[target] + lag_feature_cols).reset_index(drop=True)
 
-    # Define features 
+    # Define features
     # Numeric lagged features
     lag_num = [f"{target}_lag{l}" for l in lags]
     for col in ["time_in_minutes", "Activity (steps)"]:
@@ -53,7 +52,6 @@ def build_lagged_features(
 
     X = df_feat[feature_cols]
     y = df_feat[target]
-
 
     print(f"Shape after feature engineering: X={X.shape}, y={y.shape}")
     # print(feature_cols)
