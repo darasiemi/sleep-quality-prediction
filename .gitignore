@@ -1,3 +1,5 @@
 archive*
  .DS_Store
 EDA/.ipynb_checkpoints
+model-experimentation/.ipynb_checkpoints
+model-experimentation/sleep_model.bin
