@@ -7,3 +7,4 @@ model-experimentation/sleep_model.bin
 utils/__pycache__
 model/*
 .python-version
+deployment/__pycache__
