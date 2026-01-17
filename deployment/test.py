@@ -9,7 +9,7 @@ from utils.split_data import train_test_split
 from utils.build_lagged_features import build_lagged_features
 from utils.load_model import load_model
 from datetime import datetime, timedelta
-from predict_one import feature_cols
+from deployment.predict_one import feature_cols
 
 # API base URL
 BASE_URL = "http://localhost:9696"
@@ -55,30 +55,25 @@ def test_predict():
     
     # Convert to API format
     history = []
+
     for _, row in X_prev_8.iterrows():
         record = {
             "Start": row["Start"].isoformat(),
             "Sleep quality": float(row["Sleep quality"]),
             "time_in_minutes": float(row["time_in_minutes"]),
             "Activity (steps)": int(row["Activity (steps)"]),
-            "sleep_timing_bin": int(row["sleep_timing_bin"]),
-            "Day": int(row["Day"])
+            "sleep_timing_bin": str(row["sleep_timing_bin"]),
+            "Day": str(row["Day"])
         }
         history.append(record)
     
     payload = {
-        "history": history
+        "history": history,
+        "timestamp": df_test["Start"].iloc[16].isoformat() #Note we select the next row not in our feature to prevent data leakage
     }
 
 
-    X_single  = X_single[feature_cols]
-    
-    # # Create sample historical data (8 records minimum)
-    # base_date = datetime(2024, 1, 8, 22, 30, 0)
-    # history = []
-    
-    print("Sending request with historical data...")
-    print(f"Number of records: {len(X_single )}")
+    # X_single  = X_single[feature_cols]
     
     response = requests.post(
         f"{BASE_URL}/predict",
@@ -86,14 +81,16 @@ def test_predict():
         headers={"Content-Type": "application/json"}
     )
     
-    print(f"\nStatus Code: {response.status_code}")
+    # # print(f"\nStatus Code: {response.status_code}")
     
     if response.status_code == 200:
         result = response.json()
         print(f"Response: {json.dumps(result, indent=2)}")
-        print(f"\n✓ Predicted Sleep Quality: {result['predicted_sleep_quality']}")
+        print(f"\n Predicted Sleep Quality: {result['predicted_sleep_quality']}")
     else:
         print(f"Error: {response.text}")
+    print(f"Status Code: {response.status_code}")
+    print(f"Response: {response.text}")
 
 
 def test_predict_insufficient_data():
@@ -109,24 +106,24 @@ def test_predict_insufficient_data():
             "Sleep quality": 4.0,
             "time_in_minutes": 420.0,
             "Activity (steps)": 7000,
-            "sleep_timing_bin": 2,
-            "Day": 0
+            "sleep_timing_bin": "Early",
+            "Day": "Sunday"
         },
         {
             "Start": "2024-01-09T22:30:00",
             "Sleep quality": 4.5,
             "time_in_minutes": 450.0,
             "Activity (steps)": 8000,
-            "sleep_timing_bin": 2,
-            "Day": 1
+            "sleep_timing_bin": "Very late",
+            "Day": "Monday"
         },
         {
             "Start": "2024-01-10T22:30:00",
             "Sleep quality": 3.5,
             "time_in_minutes": 400.0,
             "Activity (steps)": 6000,
-            "sleep_timing_bin": 2,
-            "Day": 2
+            "sleep_timing_bin": "Very late",
+            "Day": "Tuesday"
         }
     ]
     
@@ -148,8 +145,9 @@ def run_all_tests():
     try:
         test_root()
         test_health()
-        test_predict()
         test_predict_insufficient_data()
+        test_predict()
+        
         
         print("\n" + "="*60)
         print("All tests completed!")
@@ -157,7 +155,7 @@ def run_all_tests():
         
     except requests.exceptions.ConnectionError:
         print("\n Error: Could not connect to the API.")
-        print("Make sure the API is running on http://localhost:8000")
+        print("Make sure the API is running on http://localhost:9696")
         print("Start the API with: python main.py")
     except Exception as e:
         print(f"\n Error running tests: {str(e)}")
@@ -165,3 +163,4 @@ def run_all_tests():
 
 if __name__ == "__main__":
     run_all_tests()
+    # test_predict()

@@ -1,3 +1,4 @@
+### Dependency Manager
 To initialize the dependency manager, uv
 ```bash
 uv init
@@ -32,5 +33,15 @@ uv run uvicorn deployment.predict:app --host 0.0.0.0 --port 9696 --reload
 To run the test
 ```bash
 uv run python -m deployment.test
+```
+
+### Docker
+To build docker image
+```bash
+docker build -t sleep-quality .
+```
+To run container
+```bash
+docker run -it --rm -p 9696:9696 sleep-quality
 ```
 
