@@ -15,7 +15,8 @@ from utils.preprocess import preprocess
 from utils.split_data import train_test_split
 
 # API base URL
-BASE_URL = "http://localhost:9696"
+# BASE_URL = "http://localhost:9696"
+BASE_URL = "http://localhost:30080"
 
 
 def test_root():
@@ -158,8 +159,7 @@ def run_all_tests():
 
     except requests.exceptions.ConnectionError:
         print("\n Error: Could not connect to the API.")
-        print("Make sure the API is running on http://localhost:9696")
-        print("Start the API with: python main.py")
+        print(f"Make sure the API is running on {BASE_URL}")
     except Exception as e:
         print(f"\n Error running tests: {str(e)}")
 

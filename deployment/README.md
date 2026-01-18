@@ -38,11 +38,11 @@ uv run python -m deployment.test
 ### Docker
 To build docker image
 ```bash
-docker build -t sleep-quality .
+docker build -t sleep-quality-prediction:v1 .
 ```
 To run container
 ```bash
-docker run -it --rm -p 9696:9696 sleep-quality
+docker run -it --rm -p 9696:9696 sleep-quality-prediction:v1
 ```
 
 ### Best Practices
@@ -66,4 +66,67 @@ To run precommits
 ```bash
 uv run pre-commit run --all-files
 ```
+
+### Kubernetes Deployment
+Ensure you have kind and kubectl installed
+```bash
+kind create cluster --name sleep-project
+```
+Verify the cluster is running
+```bash
+kubectl cluster-info
+```
+```bash
+kubectl get nodes
+```
+Loading image into kind
+Kind clusters run in Docker, so they can't access images from your local Docker daemon by default. We need to load the image into Kind.
+```bash
+kind load docker-image sleep-quality-prediction:v1 --name sleep-project
+```
+To create resources using the yaml file
+```bash
+kubectl apply -f deployment.yaml
+```
+To get pods
+
+```bash
+kubectl get pods
+```
+To see what is happening in the pod
+```bash
+kubectl describe pod <pod>
+```
+To create service
+
+```bash
+kubectl apply -f service.yaml
+```
+To get services
+```bash
+kubectl get services
+```
+Our kind cluster is not configured for NodePort, so it won't work. We don't really need this for testing things locally, so let's just use a quick fix: Use kubectl port-forward.
+```bash
+kubectl port-forward service/sleep-quality-prediction 30080:9696
+```
+Check the health endpoint
+```bash
+curl http://localhost:30080/health
+```
+Now we change the endpoint URL i.e `BASE_URL` in test.py to `"http://localhost:30080"`,
+```bash
+uv run python -m deployment.test
+
+
+```
+<!-- To create horizontal pod autoscaler
+```bash
+kubectl apply -f hpa.yaml
+```
+
+To check how many deployments you have
+```bash
+kubectl get deployments
+``` -->
 

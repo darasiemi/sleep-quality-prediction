@@ -12,7 +12,7 @@ def build_lagged_features(
     Builds lag features using df.shift() exactly like my training code,
     then returns the latest single-row feature vector for prediction.
 
-    history_df: data available up to (and including) the most recent COMPLETED record.
+    history_df: data available up to (and including) the most recent completed record.
                 Must contain target + base_vars + time_col.
     feature_cols: exact training feature columns (X.columns).
     """
@@ -29,7 +29,7 @@ def build_lagged_features(
             df_feat[f"{col}_lag{lag}"] = df_feat[col].shift(lag)
 
     # Drop rows with NaN in lagged features
-    # Only keep rows where ALL lagged features are available
+    # Only keep rows where all lagged features are available
     lag_feature_cols = [f"{target}_lag{l}" for l in lags]
     for col in base_vars:
         lag_feature_cols += [f"{col}_lag{l}" for l in lags]
@@ -47,7 +47,7 @@ def build_lagged_features(
     for col in ["sleep_timing_bin", "Day"]:
         lag_cat += [f"{col}_lag{l}" for l in lags]
 
-    # ALL features are lagged (no current-day leakage)
+    # ALL features are lagged
     feature_cols = lag_num + lag_cat
 
     X = df_feat[feature_cols]
