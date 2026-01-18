@@ -34,6 +34,7 @@ To run the test
 ```bash
 uv run python -m deployment.test
 ```
+When everything works fine you get this like in this image ![Sample Prediction](../images/sample_prediction.jpeg)
 
 ### Docker
 To build docker image
@@ -66,6 +67,7 @@ To run precommits
 ```bash
 uv run pre-commit run --all-files
 ```
+When the precommit is working correctly, you get this ![Precommit](../images/best_practices.jpeg)
 
 ### Kubernetes Deployment
 Ensure you have kind and kubectl installed
@@ -110,10 +112,11 @@ Our kind cluster is not configured for NodePort, so it won't work. We don't real
 ```bash
 kubectl port-forward service/sleep-quality-prediction 30080:9696
 ```
-Check the health endpoint
+Check the endpoint's health
 ```bash
 curl http://localhost:30080/health
 ```
+When the endpoint's health works fine, you get something similar like in this image ![Endpoint Health](../images/endpoint_health.jpeg)
 Now we change the endpoint URL i.e `BASE_URL` in test.py to `"http://localhost:30080"`,
 ```bash
 uv run python -m deployment.test
