@@ -1,4 +1,5 @@
-archive*
+archive/sleepdata_2.csv
+archive.zip
  .DS_Store
 EDA/.ipynb_checkpoints
 model-experimentation/.ipynb_checkpoints
