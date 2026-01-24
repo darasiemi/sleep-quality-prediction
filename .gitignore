@@ -5,6 +5,5 @@ model-experimentation/.ipynb_checkpoints
 model-experimentation/sleep_model.bin
 .venv
 utils/__pycache__
-model/*
 .python-version
 deployment/__pycache__
